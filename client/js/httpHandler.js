@@ -1,4 +1,4 @@
-(function() {
+(function () {
 
   const serverUrl = 'http://127.0.0.1:3000';
 
@@ -9,25 +9,18 @@
   const ajaxGet = () => {
     $.ajax({
       type: 'GET',
-      // data: formData,
       url: serverUrl,
-      //cache: false,
       contentType: false,
       processData: false,
-      success: () => {
-        // console.log('Success');
-        var myArray = ['left', 'right', 'up', 'down'];
-        var randomMove = myArray[Math.floor(Math.random() * myArray.length)];
-        SwimTeam.move(randomMove);
-
-        // window.location = window.location.href;
+      success: (data) => {
+        SwimTeam.move(data);
       },
-      error: function() { // this callback will get called if AJAX request fails
+      error: function () {
         console.error('Failed');
       }
     });
   }
-    
+
   /////////////////////////////////////////////////////////////////////
   // The ajax file uplaoder is provided for your convenience!
   // Note: remember to fix the URL below.
@@ -51,7 +44,7 @@
     });
   };
 
-  $('form').on('submit', function(e) {
+  $('form').on('submit', function (e) {
     e.preventDefault();
 
     var form = $('form .file')[0];
@@ -65,10 +58,14 @@
       console.log('Not a jpg file!');
       return;
     }
-
+    console.log(typeof file)
     ajaxFileUplaod(file);
+    if (ajaxFileUplaod) {
+      $('.pool').css('background-image', `url(${serverUrl}/fileupload)`);
+    }
   });
 
-  // setInterval(ajaxGet, 500);
+  $('.pool').css('background-image', `url(${serverUrl}/bg)`);
+  setInterval(ajaxGet, 500);
 
 })();

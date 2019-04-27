@@ -12,12 +12,13 @@ const isValidMessage = (message) => {
   return _.contains(validMessages, message);
 };
 
-const logKeypress = (key) => {
+const logKeypress = (callback, key) => {
   // in raw-mode it's handy to see what's been typed
   // when not in raw mode, the terminal will do this for us
   if (process.stdin.isRaw) {
     process.stdout.write(key);
   }
+  callback(key);
 };
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -26,7 +27,7 @@ const logKeypress = (key) => {
 
 var message = ''; // a buffer to collect key presses
 
-module.exports.initialize = () => {
+module.exports.initialize = (callback) => {
 
   // setup an event handler on standard input
   process.stdin.on('keypress', (chunk, key) => {
@@ -38,13 +39,14 @@ module.exports.initialize = () => {
     // check to see if the keypress itself is a valid message
     if (isValidMessage(key.name)) {
       console.log(`Message received: ${key.name}`);
+      callback(key.name);
       return; // don't do any more processing on this key
     }
-    
+
     // otherwise build up a message from individual characters
     if (key && (key.name === 'return' || key.name === 'enter')) {
       // on enter, process the message
-      logKeypress('\n');
+      logKeypress(callback, '\n');
       if (message.length > 0) {
         console.log(`Message received: ${message}`);
       }
@@ -53,7 +55,7 @@ module.exports.initialize = () => {
     } else {
       // collect the individual characters/keystrokes
       message += (mappedChars[key.name] || key.name);
-      logKeypress(key.name);
+      logKeypress(callback, key.name);
     }
 
   });
