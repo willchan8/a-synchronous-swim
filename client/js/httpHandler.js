@@ -6,6 +6,28 @@
   // TODO: build the swim command fetcher here
   //
 
+  const ajaxGet = () => {
+    $.ajax({
+      type: 'GET',
+      // data: formData,
+      url: serverUrl,
+      //cache: false,
+      contentType: false,
+      processData: false,
+      success: () => {
+        // console.log('Success');
+        var myArray = ['left', 'right', 'up', 'down'];
+        var randomMove = myArray[Math.floor(Math.random() * myArray.length)];
+        SwimTeam.move(randomMove);
+
+        // window.location = window.location.href;
+      },
+      error: function() { // this callback will get called if AJAX request fails
+        console.error('Failed');
+      }
+    });
+  }
+    
   /////////////////////////////////////////////////////////////////////
   // The ajax file uplaoder is provided for your convenience!
   // Note: remember to fix the URL below.
@@ -14,10 +36,11 @@
   const ajaxFileUplaod = (file) => {
     var formData = new FormData();
     formData.append('file', file);
+
     $.ajax({
       type: 'POST',
       data: formData,
-      url: 'FILL_ME_IN',
+      url: serverUrl,
       cache: false,
       contentType: false,
       processData: false,
@@ -45,5 +68,7 @@
 
     ajaxFileUplaod(file);
   });
+
+  // setInterval(ajaxGet, 500);
 
 })();
